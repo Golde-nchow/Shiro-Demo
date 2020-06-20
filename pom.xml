@@ -14,6 +14,10 @@
     <artifactId>Shiro-Demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <modules>
+        <module>Simple-Shiro</module>
+    </modules>
+
     <dependencies>
         <!-- shiro依赖 -->
         <dependency>
