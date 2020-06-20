@@ -1,6 +1,9 @@
 package cn.cjz.config;
 
+import cn.cjz.shiro.MyRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +21,7 @@ public class ShiroConfig {
     /**
      * Shiro资源过滤器
      * Shiro 可控制 Web请求必须经过 Shiro 主过滤器的拦截
-     * @param securityManager 会话管理器
+     * @param securityManager 安全事务管理器
      */
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
@@ -41,6 +44,28 @@ public class ShiroConfig {
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
+    }
+
+    /**
+     * 安全管理器
+     * @param myRealm 连接Shiro和数据的桥梁，当Shiro执行操作的时候，都会去Realm获取数据，进行鉴权
+     */
+    @Bean
+    public SecurityManager securityManager(MyRealm myRealm) {
+        DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
+
+        // 设置自定义realm
+        securityManager.setRealm(myRealm);
+
+        return securityManager;
+    }
+
+    /**
+     * 自定义授权和鉴权
+     */
+    @Bean
+    public MyRealm shiroRealm() {
+        return new MyRealm();
     }
 
 
