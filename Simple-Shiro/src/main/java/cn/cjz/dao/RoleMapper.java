@@ -1,8 +1,8 @@
 package cn.cjz.dao;
 
 import cn.cjz.model.Role;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * @description: 角色Mapper类
  * @version: 1.0
  */
-@Mapper
+@Component
 public interface RoleMapper {
     Set<Role> findRolesByUserId(@Param("uid") Integer uid);
 }

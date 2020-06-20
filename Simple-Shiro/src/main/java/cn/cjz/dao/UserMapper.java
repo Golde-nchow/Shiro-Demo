@@ -1,8 +1,8 @@
 package cn.cjz.dao;
 
 import cn.cjz.model.User;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Kam-Chou
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
  * @description: 用户Mapper类
  * @version: 1.0
  */
-@Mapper
+@Component
 public interface UserMapper {
 
     User findByUserName(String userName);
