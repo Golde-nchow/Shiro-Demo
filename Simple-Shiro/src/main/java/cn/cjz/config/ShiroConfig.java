@@ -1,5 +1,6 @@
 package cn.cjz.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import cn.cjz.shiro.MyRealm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -68,6 +69,13 @@ public class ShiroConfig {
         return new MyRealm();
     }
 
+    /**
+     * 当我们想要在thymeleaf中使用注解，则必须有该配置.
+     */
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
+    }
 
 
 }
