@@ -1,6 +1,6 @@
-package cn.common.dao;
+package cn.cjz.dao;
 
-import cn.common.model.User;
+import cn.cjz.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

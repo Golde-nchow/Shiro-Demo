@@ -1,10 +1,11 @@
-package cn.common.dao;
+package cn.cjz.dao;
 
-import cn.common.model.Role;
+import cn.cjz.model.Role;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Set;
+
 
 /**
  * @author: Kam-Chou

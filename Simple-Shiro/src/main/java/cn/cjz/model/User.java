@@ -1,4 +1,4 @@
-package cn.common.model;
+package cn.cjz.model;
 
 import lombok.Data;
 
