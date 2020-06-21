@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.common.dao.RoleMapper">
+<mapper namespace="cn.cjz.dao.RoleMapper">
 
     <!-- 查询用户信息 -->
     <select id="findRolesByUserId" resultType="com.springboot.test.shiro.modules.user.dao.entity.Role">
