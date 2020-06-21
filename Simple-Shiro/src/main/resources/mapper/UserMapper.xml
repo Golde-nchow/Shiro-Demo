@@ -4,7 +4,7 @@
 <mapper namespace="cn.cjz.dao.UserMapper">
 
     <!-- 查询用户信息 -->
-    <select id="findByUserName" resultType="com.springboot.test.shiro.modules.user.dao.entity.User">
+    <select id="findByUserName" resultType="cn.cjz.model.User">
         SELECT *
         FROM user_info
         WHERE username = #{userName}
@@ -12,7 +12,7 @@
 
     <!-- 添加用户 -->
     <!-- 创建用户 -->
-    <insert id="insert" parameterType="com.springboot.test.shiro.modules.user.dao.entity.User">
+    <insert id="insert" parameterType="cn.cjz.model.User">
         <selectKey resultType="java.lang.Integer" keyProperty="uid" order="AFTER">
             SELECT
             LAST_INSERT_ID()
