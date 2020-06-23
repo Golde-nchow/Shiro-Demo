@@ -2,6 +2,7 @@ package cn.cjz.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import cn.cjz.shiro.MyRealm;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -77,5 +78,13 @@ public class ShiroConfig {
         return new ShiroDialect();
     }
 
-
+    /**
+     * 开启注解模式，例如: @RequirePermissions，@RequireRoles
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
+    }
 }
