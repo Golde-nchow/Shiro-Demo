@@ -2,6 +2,7 @@ package cn.cjz.web;
 
 import cn.cjz.dao.UserMapper;
 import cn.cjz.model.User;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class UserController {
     /**
      * 创建用户（写死）
      */
+    @RequiresPermissions("userInfo:add")
     @RequestMapping("add")
     public String add() {
         User user = new User();
@@ -37,6 +39,7 @@ public class UserController {
     /**
      * 删除用户（写死）
      */
+    @RequiresPermissions("userInfo:del")
     @RequestMapping("del")
     public String del() {
         userMapper.del("cjz");
@@ -46,6 +49,7 @@ public class UserController {
     /**
      * 用户列表页面
      */
+    @RequiresPermissions("userInfo:view")
     @RequestMapping("view")
     public String view() {
         return "用户列表页面";
