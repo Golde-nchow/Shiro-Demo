@@ -29,9 +29,9 @@ public class WhitelabelErrorPageApplication {
     @Bean
     public WebServerFactoryCustomizer<ConfigurableWebServerFactory> webServerFactoryCustomizer() {
         return factory -> {
-            ErrorPage unauthorized = new ErrorPage(HttpStatus.UNAUTHORIZED, "/unauthorized");
-            ErrorPage errorPage = new ErrorPage(HttpStatus.NOT_FOUND, "/404");
-            ErrorPage serverError = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500");
+            ErrorPage unauthorized = new ErrorPage(HttpStatus.UNAUTHORIZED, "/unauthorized.html");
+            ErrorPage errorPage = new ErrorPage(HttpStatus.NOT_FOUND, "/404.html");
+            ErrorPage serverError = new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500.html");
             factory.addErrorPages(unauthorized, errorPage, serverError);
         };
     }
