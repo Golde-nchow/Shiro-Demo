@@ -36,6 +36,10 @@ public class ShiroConfig {
         // 设置登录后跳转的页面
         shiroFilterFactoryBean.setSuccessUrl("/index");
         // 设置无权限页面
+        // 【解释为何这里不生效】
+        // 因为最后会检查过滤器是否是 AuthorizationFilter 的子类，如果是则设置并使用这个URL
+        // 但是我们这里的 Filter 是 ShiroFilterFactory 生成的，所以是一个 SpringShiroFilter，并非AuthorizationFilter
+        // 所以无效也是很正常的.
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 
         // 配置访问权限, 使用 LinkedHashMap 保证顺序
