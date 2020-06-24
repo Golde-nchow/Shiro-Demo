@@ -18,6 +18,7 @@
     <modules>
         <module>Simple-Shiro</module>
         <module>Whitelabel-Error-Page_Solution</module>
+        <module>Remember-Me</module>
     </modules>
 
     <dependencies>
