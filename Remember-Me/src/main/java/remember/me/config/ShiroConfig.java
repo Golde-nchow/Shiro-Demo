@@ -46,8 +46,10 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/", "anon");
-        //其他资源都需要认证  authc 表示需要认证才能进行访问
-        filterChainDefinitionMap.put("/**", "authc");
+        // authc 表示需要认证才能进行访问
+        // 但是由于配置了 remember-me，所以需要改为 user，表示“记住我”或者“鉴权通过”就可以访问的地址.
+//        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "user");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
