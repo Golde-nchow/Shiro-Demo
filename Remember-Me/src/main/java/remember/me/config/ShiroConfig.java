@@ -4,12 +4,16 @@ import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import remember.me.shiro.MyRealm;
 
+import java.util.Base64;
 import java.util.LinkedHashMap;
 
 /**
@@ -54,11 +58,13 @@ public class ShiroConfig {
      * @param myRealm 连接Shiro和数据的桥梁，当Shiro执行操作的时候，都会去Realm获取数据，进行鉴权
      */
     @Bean
-    public SecurityManager securityManager(MyRealm myRealm) {
+    public SecurityManager securityManager(MyRealm myRealm, CookieRememberMeManager rememberMeManager) {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
 
         // 设置自定义realm
         securityManager.setRealm(myRealm);
+        // 配置记住我管理器
+        securityManager.setRememberMeManager(rememberMeManager);
 
         return securityManager;
     }
@@ -97,5 +103,43 @@ public class ShiroConfig {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
+    }
+
+    /**
+     * 创建“记住我” Cookie
+     */
+    @Bean
+    public SimpleCookie rememberMeCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie("remember-me");
+
+        // 设置该属性为 true 后，只能让 http 请求访问到该 Cookie.
+        simpleCookie.setHttpOnly(true);
+        simpleCookie.setPath("/auth");
+        // 设置 Cookie 的生效时间 [一个星期]
+        simpleCookie.setMaxAge(60 * 60 * 24 * 7);
+
+        return simpleCookie;
+    }
+
+    /**
+     * 记住我管理器
+     */
+    @Bean
+    public CookieRememberMeManager rememberMeManager(SimpleCookie simpleCookie) {
+        CookieRememberMeManager rememberMeManager = new CookieRememberMeManager();
+        rememberMeManager.setCookie(simpleCookie);
+        // Cookie 的加密密钥
+        rememberMeManager.setCipherKey(Base64.getDecoder().decode("4AvVhmFLUs0KTA3Kprsdag=="));
+        return rememberMeManager;
+    }
+
+    /**
+     * 过滤掉记住我，不进行拦截
+     */
+    @Bean
+    public FormAuthenticationFilter rememberMeFilter() {
+        FormAuthenticationFilter filter = new FormAuthenticationFilter();
+        filter.setRememberMeParam("remember-me");
+        return filter;
     }
 }
