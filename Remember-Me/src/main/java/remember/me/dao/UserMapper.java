@@ -1,5 +1,6 @@
 package remember.me.dao;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import remember.me.model.User;
@@ -10,7 +11,7 @@ import remember.me.model.User;
  * @description: 用户Mapper类
  * @version: 1.0
  */
-@Component
+@Mapper
 public interface UserMapper {
 
     User findByUserName(String userName);
