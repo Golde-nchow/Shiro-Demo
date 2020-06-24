@@ -116,7 +116,7 @@ public class ShiroConfig {
 
         // 设置该属性为 true 后，只能让 http 请求访问到该 Cookie.
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setPath("/auth");
+        simpleCookie.setPath("/");
         // 设置 Cookie 的生效时间 [一个星期]
         simpleCookie.setMaxAge(60 * 60 * 24 * 7);
 
@@ -135,13 +135,4 @@ public class ShiroConfig {
         return rememberMeManager;
     }
 
-    /**
-     * 过滤掉记住我，不进行拦截
-     */
-    @Bean
-    public FormAuthenticationFilter rememberMeFilter() {
-        FormAuthenticationFilter filter = new FormAuthenticationFilter();
-        filter.setRememberMeParam("remember-me");
-        return filter;
-    }
 }
