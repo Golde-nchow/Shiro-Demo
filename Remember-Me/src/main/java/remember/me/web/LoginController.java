@@ -54,8 +54,9 @@ public class LoginController {
      * 登录用户
      */
     @PostMapping("login")
-    public String loginUser(HttpServletRequest request, String username, String password, Model model, HttpSession session) {
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
+    public String loginUser(HttpServletRequest request, String username, String password, boolean rememberMe, Model model, HttpSession session) {
+        // 添加了一个 rememberMe 的参数, 值为 true 或者 false
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password, rememberMe);
         Subject subject = SecurityUtils.getSubject();
 
         try {
