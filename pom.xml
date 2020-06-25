@@ -19,6 +19,7 @@
         <module>Simple-Shiro</module>
         <module>Whitelabel-Error-Page_Solution</module>
         <module>Remember-Me</module>
+        <module>Shiro-Ehcache</module>
     </modules>
 
     <dependencies>
