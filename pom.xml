@@ -20,6 +20,7 @@
         <module>Whitelabel-Error-Page_Solution</module>
         <module>Remember-Me</module>
         <module>Shiro-Ehcache</module>
+        <module>Shiro-Session</module>
     </modules>
 
     <dependencies>
