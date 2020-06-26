@@ -1,6 +1,8 @@
 package ehcache.dao;
 
 import ehcache.model.Role;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -15,5 +17,12 @@ import java.util.Set;
  */
 @Component
 public interface RoleMapper {
+
     Set<Role> findRolesByUserId(@Param("uid") Integer uid);
+
+    @Delete("DELETE FROM sys_role_permission WHERE role_id = #{rid} AND permission_id = #{pid}")
+    void delPermission(@Param("rid") Integer roleId, @Param("pid") Integer permissionId);
+
+    @Insert("INSERT INTO sys_role_permission(role_id, permission_id) VALUES(#{rid}, #{pid})")
+    void addPermission(@Param("rid") Integer roleId, @Param("pid") Integer permissionId);
 }
