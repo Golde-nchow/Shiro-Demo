@@ -2,6 +2,7 @@ package ehcache.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import ehcache.shiro.MyRealm;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -54,11 +55,13 @@ public class ShiroConfig {
      * @param myRealm 连接Shiro和数据的桥梁，当Shiro执行操作的时候，都会去Realm获取数据，进行鉴权
      */
     @Bean
-    public SecurityManager securityManager(MyRealm myRealm) {
+    public SecurityManager securityManager(MyRealm myRealm, EhCacheManager ehCacheManager) {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
 
         // 设置自定义realm
         securityManager.setRealm(myRealm);
+        // 设置缓存管理器
+        securityManager.setCacheManager(ehCacheManager);
 
         return securityManager;
     }
@@ -97,5 +100,16 @@ public class ShiroConfig {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
+    }
+
+    /**
+     * 缓存管理器
+     */
+    @Bean
+    public EhCacheManager ehCacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        // ehcache好像只能是以xml配置文件的方式
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
+        return ehCacheManager;
     }
 }
