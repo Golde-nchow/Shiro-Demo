@@ -10,12 +10,19 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Set;
+
+import static org.apache.shiro.web.filter.mgt.DefaultFilter.user;
 
 /**
  * @author: Kam-Chou
@@ -93,5 +100,15 @@ public class MyRealm extends AuthorizingRealm {
 
         // principal, credentials, realmName
         return new SimpleAuthenticationInfo(user, user.getPassword(), user.getName());
+    }
+
+    ////////////////////////////// 缓存 /////////////////////////////
+
+    /**
+     * 清除所有的授权信息缓存
+     */
+    public void clearCurrentAuthenticationInfo() {
+        // 删除当前的用户授权信息缓存
+        getAuthorizationCache().remove(SecurityUtils.getSubject().getPrincipals());
     }
 }
