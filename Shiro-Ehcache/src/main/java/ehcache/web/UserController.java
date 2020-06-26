@@ -1,10 +1,19 @@
 package ehcache.web;
 
+import ehcache.dao.RoleMapper;
 import ehcache.dao.UserMapper;
 import ehcache.model.User;
+import ehcache.shiro.MyRealm;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,10 +29,13 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
     /**
      * 创建用户（写死）
      */
-    @RequiresPermissions("userInfo:add")
+    @RequiresPermissions("userinfo:add")
     @RequestMapping("add")
     public String add() {
         User user = new User();
@@ -53,6 +65,45 @@ public class UserController {
     @RequestMapping("view")
     public String view() {
         return "用户列表页面";
+    }
+
+    /**
+     * 给test用户添加 userInfo:del 权限
+     */
+    @RequestMapping("addPermission")
+    @ResponseBody
+    public String addPermission() {
+
+        // 将 删除的权限 关联到test用户所在的角色
+        roleMapper.addPermission(2, 2);
+
+        // 添加成功之后 清除缓存
+        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+        MyRealm shiroRealm = (MyRealm) securityManager.getRealms().iterator().next();
+        // 清除当前用户缓存-权限相关
+        shiroRealm.clearCurrentAuthenticationInfo();
+
+        return "给admin用户添加 userInfo:del 权限成功";
+
+    }
+
+    /**
+     * 删除admin用户 userInfo:del 权限
+     */
+    @RequestMapping("delPermission")
+    @ResponseBody
+    public String delPermission() {
+
+        // 将 删除的权限 关联到test用户所在的角色
+        roleMapper.delPermission(2, 2);
+        // 添加成功之后 清除缓存
+        DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager)SecurityUtils.getSecurityManager();
+        MyRealm shiroRealm = (MyRealm) securityManager.getRealms().iterator().next();
+        //清除当前用户授权缓存
+        shiroRealm.clearCurrentAuthenticationInfo();
+
+        return "删除admin用户userInfo:del 权限成功";
+
     }
 
 }
