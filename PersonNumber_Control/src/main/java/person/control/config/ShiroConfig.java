@@ -2,12 +2,14 @@ package person.control.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import person.control.filter.SessionControlFilter;
 import person.control.shiro.MyRealm;
 
 import java.util.LinkedHashMap;
@@ -97,5 +99,23 @@ public class ShiroConfig {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
+    }
+
+    /**
+     * session控制过滤器
+     */
+    @Bean
+    public SessionControlFilter sessionControlFilter(SessionManager sessionManager) {
+        SessionControlFilter sessionControlFilter = new SessionControlFilter();
+        // sessionManager：用于获取指定SessionID的Session
+        sessionControlFilter.setSessionManager(sessionManager);
+        // 踢出最先登录的
+        sessionControlFilter.setKickOutAfter(false);
+        // 最大会话数
+        sessionControlFilter.setMaxSession(1);
+        // 踢出地址
+        sessionControlFilter.setKickOutUrl("/login?kickOut=1");
+
+        return sessionControlFilter;
     }
 }
