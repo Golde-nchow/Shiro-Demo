@@ -35,8 +35,7 @@ public class MyRealm extends AuthorizingRealm {
     private PermissionMapper permissionMapper;
 
     /**
-     * 授权方法（角色和权限的添加）
-     * @param principals 存储的是
+     * 获取授权信息
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
@@ -63,8 +62,7 @@ public class MyRealm extends AuthorizingRealm {
     }
 
     /**
-     * 鉴权方法，返回用户信息
-     * @param token
+     * 获取身份验证信息
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
