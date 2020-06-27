@@ -21,6 +21,7 @@
         <module>Remember-Me</module>
         <module>Shiro-Ehcache</module>
         <module>Shiro-Session</module>
+        <module>PersonNumber_Control</module>
     </modules>
 
     <dependencies>
