@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(value = "cn.cjz.dao")
+@MapperScan(value = "person.control.dao")
 public class PersonControlApplication {
 
 	public static void main(String[] args) {
