@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import person.control.filter.SessionControlFilter;
 import person.control.shiro.MyRealm;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 
 /**
@@ -29,7 +30,7 @@ public class ShiroConfig {
      * @param securityManager 安全事务管理器
      */
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, SessionControlFilter sessionControlFilter) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
@@ -40,12 +41,18 @@ public class ShiroConfig {
         // 设置无权限页面
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
 
+        // 添加并设置session过滤器
+        LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
+        filtersMap.put("kickOut", sessionControlFilter);
+        shiroFilterFactoryBean.setFilters(filtersMap);
+
         // 配置访问权限, 使用 LinkedHashMap 保证顺序
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/login", "anon");
+        // 这里就变成，先通过kickOut过滤器，然后再执行 anon 过滤器
+        filterChainDefinitionMap.put("/login", "kickOut,anon");
         filterChainDefinitionMap.put("/", "anon");
         //其他资源都需要认证  authc 表示需要认证才能进行访问
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "kickOut,authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
