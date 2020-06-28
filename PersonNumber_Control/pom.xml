@@ -19,7 +19,11 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
 
     <build>
