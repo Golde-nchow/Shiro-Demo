@@ -1,6 +1,7 @@
 package person.control.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -50,7 +51,7 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 这里就变成，先通过kickOut过滤器，然后再执行 anon 过滤器
         filterChainDefinitionMap.put("/login", "kickOut,anon");
-        filterChainDefinitionMap.put("/", "anon");
+        filterChainDefinitionMap.put("/", "kickOut,anon");
         //其他资源都需要认证  authc 表示需要认证才能进行访问
         filterChainDefinitionMap.put("/**", "kickOut,authc");
 
@@ -63,11 +64,12 @@ public class ShiroConfig {
      * @param myRealm 连接Shiro和数据的桥梁，当Shiro执行操作的时候，都会去Realm获取数据，进行鉴权
      */
     @Bean
-    public SecurityManager securityManager(MyRealm myRealm) {
+    public SecurityManager securityManager(MyRealm myRealm, EhCacheManager ehCacheManager) {
         DefaultWebSecurityManager securityManager =  new DefaultWebSecurityManager();
 
         // 设置自定义realm
         securityManager.setRealm(myRealm);
+        securityManager.setCacheManager(ehCacheManager);
 
         return securityManager;
     }
@@ -112,17 +114,30 @@ public class ShiroConfig {
      * session控制过滤器
      */
     @Bean
-    public SessionControlFilter sessionControlFilter(SessionManager sessionManager) {
+    public SessionControlFilter sessionControlFilter(SessionManager sessionManager, EhCacheManager ehCacheManager) {
         SessionControlFilter sessionControlFilter = new SessionControlFilter();
         // sessionManager：用于获取指定SessionID的Session
         sessionControlFilter.setSessionManager(sessionManager);
         // 踢出最先登录的
         sessionControlFilter.setKickOutAfter(false);
+        // 设置缓存
+        sessionControlFilter.setCache(ehCacheManager);
         // 最大会话数
         sessionControlFilter.setMaxSession(1);
         // 踢出地址
         sessionControlFilter.setKickOutUrl("/login?kickOut=1");
 
         return sessionControlFilter;
+    }
+
+    /**
+     * 缓存管理器
+     */
+    @Bean
+    public EhCacheManager ehCacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        // ehcache好像只能是以xml配置文件的方式
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
+        return ehCacheManager;
     }
 }
