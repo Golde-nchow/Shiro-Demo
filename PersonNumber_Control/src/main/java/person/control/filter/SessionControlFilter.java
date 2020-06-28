@@ -1,5 +1,6 @@
 package person.control.filter;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.Session;
@@ -7,6 +8,7 @@ import org.apache.shiro.session.mgt.DefaultSessionKey;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.session.mgt.WebSessionKey;
 import org.apache.shiro.web.util.WebUtils;
 import person.control.model.User;
 
@@ -52,7 +54,7 @@ public class SessionControlFilter extends AccessControlFilter {
     }
 
     /**
-     * 访问拒绝时，是否自己处理，false表示自己处理，不执行后面拦截器; true表示继续执行拦截链
+     * 访问拒绝时，是否自己处理，false表示自己处理，不执行后面拦截器; true表示继续执行拦截链，自己不处理
      */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
@@ -94,12 +96,13 @@ public class SessionControlFilter extends AccessControlFilter {
                 kickedOutSessionId = deque.removeLast();
             }
 
-            Session kickedOutSession = sessionManager.getSession(new DefaultSessionKey(kickedOutSessionId));
-            // 设置踢出标识
+            Session kickedOutSession = sessionManager.getSession(new WebSessionKey(kickedOutSessionId, request, response));
             if (kickedOutSession != null) {
                 // 指定的 session 设置 kickOut 属性，并不是当前的session
+                // 设置踢出标识
                 kickedOutSession.setAttribute("kickOut", true);
             }
+
         }
 
         // 如果某个会话意识到自己的 session 有 kickOut属性，则直接注销当前会话.
