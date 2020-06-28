@@ -64,7 +64,7 @@ public class LoginController {
             User user = (User) subject.getPrincipal();
             session.setAttribute("user", user);
             model.addAttribute("user", user);
-            return "index";
+            return "redirect:/index";
         } catch (Exception e) {
             // 从request获取 shiro 异常
             String exception = (String) request.getAttribute("shiroLoginFailure");
