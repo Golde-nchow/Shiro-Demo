@@ -62,6 +62,7 @@ public class ShiroConfig {
 
         // 设置自定义realm
         securityManager.setRealm(myRealm);
+        securityManager.setCacheManager(ehCacheManager());
 
         return securityManager;
     }
