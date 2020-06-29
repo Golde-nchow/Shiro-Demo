@@ -1,5 +1,9 @@
 package retry.limit.web;
 
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.springframework.beans.factory.annotation.Autowired;
 import retry.limit.model.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import retry.limit.shiro.RetryLimitCredentialsMatcher;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,6 +25,9 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class LoginController {
+
+    @Autowired
+    private RetryLimitCredentialsMatcher retryLimitCredentialsMatcher;
 
     @RequestMapping("/")
     public String root() {
@@ -65,10 +73,19 @@ public class LoginController {
             session.setAttribute("user", user);
             model.addAttribute("user", user);
             return "redirect:index";
+
         } catch (Exception e) {
-            // 从request获取 shiro 异常
-            String exception = (String) request.getAttribute("shiroLoginFailure");
-            model.addAttribute("msg", e.getMessage());
+            if (e instanceof UnknownAccountException) {
+                model.addAttribute("msg", "用户名或密码错误");
+            }
+
+            if (e instanceof IncorrectCredentialsException) {
+                model.addAttribute("msg", "用户名或密码错误");
+            }
+
+            if (e instanceof LockedAccountException) {
+                model.addAttribute("msg", "账号已被锁定，请联系管理员");
+            }
 
             // 返回登录页面
             return "login";
@@ -107,5 +124,15 @@ public class LoginController {
     @RequestMapping("unauthorized")
     public String unauthorized() {
         return "unauthorized";
+    }
+
+    /**
+     * 解除 test 用户的限制登录
+     */
+    @RequestMapping("/unlockAccount")
+    public String unlockAccount(Model model) {
+        model.addAttribute("msg","用户解锁成功");
+        retryLimitCredentialsMatcher.unlockAccount("test");
+        return "login";
     }
 }
