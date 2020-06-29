@@ -1,5 +1,6 @@
 package retry.limit.dao;
 
+import org.apache.ibatis.annotations.Update;
 import retry.limit.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,8 @@ public interface UserMapper {
     int insert(User user);
 
     int del(@Param("username") String username);
+
+    @Update("UPDATE user_info SET state = #{user.state}")
+    void update(@Param("user") User user);
 
 }

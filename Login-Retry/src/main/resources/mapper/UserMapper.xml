@@ -66,4 +66,19 @@
         WHERE username = #{username}
     </delete>
 
+    <!-- 更新用户 -->
+    <update id="updateUser" parameterType="retry.limit.model.User">
+        UPDATE
+            user_info
+        <trim prefix="SET" suffix=",">
+            <if test="user.username != null">username = #{user.username}</if>
+            <if test="user.password != null">username = #{user.password}</if>
+            <if test="user.name != null">username = #{user.name}</if>
+            <if test="user.id_card_num != null">username = #{user.id_card_num}</if>
+            <if test="user.state != null">username = #{user.state}</if>
+        </trim>
+        WHERE
+            uid = #{user.uid}
+    </update>
+
 </mapper>
