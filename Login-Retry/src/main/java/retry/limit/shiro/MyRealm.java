@@ -73,7 +73,6 @@ public class MyRealm extends AuthorizingRealm {
         // 获取用户名和密码（第二种方式）
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String username = usernamePasswordToken.getUsername();
-        String password = new String(usernamePasswordToken.getPassword());
 
         // 从数据库查询用户信息
         User user = this.userMapper.findByUserName(username);
