@@ -35,13 +35,16 @@ public class RetryLimitCredentialsMatcher extends SimpleCredentialsMatcher {
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         // 获取登录用户信息
-        User user = (User) token.getPrincipal();
+        String username = (String) token.getPrincipal();
         // 从缓冲获取重试次数
-        AtomicInteger retryTime = retryCache.get(user.getName());
+        AtomicInteger retryTime = retryCache.get(username);
         // 如果没有重试过，则放入缓存
         if (retryTime == null) {
             retryTime = new AtomicInteger(0);
+            retryCache.put(username, retryTime);
         }
+
+        User user = userMapper.findByUserName(username);
         // 如果重试次数大于5次，则锁定用户
         if (retryTime.incrementAndGet() > 5) {
             // 如果用户的状态是正常，则修改为不正常.
@@ -50,7 +53,7 @@ public class RetryLimitCredentialsMatcher extends SimpleCredentialsMatcher {
                 temp.setState("1");
                 temp.setUid(user.getUid());
 
-                userMapper.update(temp);
+                userMapper.updateUser(temp);
             }
             System.out.println("锁定用户");
             throw new LockedAccountException();
@@ -73,7 +76,7 @@ public class RetryLimitCredentialsMatcher extends SimpleCredentialsMatcher {
             temp.setUid(user.getUid());
             temp.setState("0");
             // 数据持久化
-            userMapper.update(user);
+            userMapper.updateUser(temp);
             // 从缓存中移除此
             retryCache.remove(username);
         }
