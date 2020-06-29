@@ -1,6 +1,7 @@
 package retry.limit.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -9,6 +10,7 @@ import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import retry.limit.shiro.MyRealm;
+import retry.limit.shiro.RetryLimitCredentialsMatcher;
 
 import java.util.LinkedHashMap;
 
@@ -42,6 +44,7 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/", "anon");
+        filterChainDefinitionMap.put("/unlockAccount", "anon");
         //其他资源都需要认证  authc 表示需要认证才能进行访问
         filterChainDefinitionMap.put("/**", "authc");
 
@@ -67,8 +70,10 @@ public class ShiroConfig {
      * 自定义授权和鉴权
      */
     @Bean
-    public MyRealm shiroRealm() {
-        return new MyRealm();
+    public MyRealm shiroRealm(RetryLimitCredentialsMatcher retryLimitCredentialsMatcher) {
+        MyRealm myRealm = new MyRealm();
+        myRealm.setCredentialsMatcher(retryLimitCredentialsMatcher);
+        return myRealm;
     }
 
     /**
@@ -97,5 +102,25 @@ public class ShiroConfig {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
+    }
+
+    /**
+     * 缓存管理器
+     */
+    @Bean
+    public EhCacheManager ehCacheManager() {
+        EhCacheManager ehCacheManager = new EhCacheManager();
+        // ehcache好像只能是以xml配置文件的方式
+        ehCacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
+        return ehCacheManager;
+    }
+
+    /**
+     * 重试次数密码匹配器（不对密码加密）
+     */
+    @Bean
+    public RetryLimitCredentialsMatcher retryLimitCredentialsMatcher(EhCacheManager ehCacheManager) {
+        RetryLimitCredentialsMatcher matcher = new RetryLimitCredentialsMatcher(ehCacheManager);
+        return matcher;
     }
 }
