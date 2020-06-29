@@ -20,7 +20,6 @@ public interface UserMapper {
 
     int del(@Param("username") String username);
 
-    @Update("UPDATE user_info SET state = #{user.state}")
-    void update(@Param("user") User user);
+    void updateUser(@Param("user") User user);
 
 }
