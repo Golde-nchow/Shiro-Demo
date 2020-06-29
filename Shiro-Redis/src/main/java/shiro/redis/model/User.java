@@ -2,6 +2,7 @@ package shiro.redis.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import java.util.Set;
  * @version: 1.0
  */
 @Data
-public class User {
+public class User implements Serializable{
 
     private Integer uid;
 

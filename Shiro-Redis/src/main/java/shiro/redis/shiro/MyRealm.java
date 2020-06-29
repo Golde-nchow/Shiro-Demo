@@ -92,4 +92,14 @@ public class MyRealm extends AuthorizingRealm {
         // principal, credentials, realmName
         return new SimpleAuthenticationInfo(user, user.getPassword(), user.getName());
     }
+
+    ////////////////////////////// 缓存 /////////////////////////////
+
+    /**
+     * 清除当前授权信息缓存
+     */
+    public void clearCurrentAuthenticationInfo() {
+        // 删除当前的用户授权信息缓存
+        getAuthorizationCache().remove(SecurityUtils.getSubject().getPrincipals());
+    }
 }

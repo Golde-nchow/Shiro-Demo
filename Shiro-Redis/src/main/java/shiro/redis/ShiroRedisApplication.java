@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan(value = "shiro.redis.dao")
-public class SimpleShiroApplication {
+public class ShiroRedisApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SimpleShiroApplication.class, args);
+		SpringApplication.run(ShiroRedisApplication.class, args);
 	}
 
 }
