@@ -22,6 +22,7 @@
         <module>Shiro-Ehcache</module>
         <module>Shiro-Session</module>
         <module>PersonNumber_Control</module>
+        <module>Login-Retry</module>
     </modules>
 
     <dependencies>
