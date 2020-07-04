@@ -24,6 +24,7 @@
         <module>PersonNumber_Control</module>
         <module>Login-Retry</module>
         <module>Shiro-Redis</module>
+        <module>Shiro-Redis_Frequently-Read</module>
     </modules>
 
     <dependencies>
