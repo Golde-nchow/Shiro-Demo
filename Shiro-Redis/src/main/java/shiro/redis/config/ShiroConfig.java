@@ -16,7 +16,9 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import shiro.redis.shiro.ShiroLogoutFilter;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 
 /**
@@ -36,7 +38,12 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        LinkedHashMap<String, Filter> filters = new LinkedHashMap<>();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+
+        // 设置过滤器
+        filters.put("logout", shiroLogoutFilter());
+        shiroFilterFactoryBean.setFilters(filters);
 
         // 设置登录地址，非页面名
         shiroFilterFactoryBean.setLoginUrl("/");
@@ -49,6 +56,8 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/", "anon");
+        // 使用自己的登出逻辑
+        filterChainDefinitionMap.put("/logout", "logout");
         //其他资源都需要认证  authc 表示需要认证才能进行访问
         filterChainDefinitionMap.put("/**", "authc");
 
@@ -195,5 +204,14 @@ public class ShiroConfig {
         sessionManager.setSessionIdUrlRewritingEnabled(false);
 
         return sessionManager;
+    }
+
+    /**
+     * 配置自定义登出 filer
+     */
+    public ShiroLogoutFilter shiroLogoutFilter() {
+        ShiroLogoutFilter logoutFilter = new ShiroLogoutFilter();
+        logoutFilter.setRedirectUrl("/login");
+        return logoutFilter;
     }
 }
