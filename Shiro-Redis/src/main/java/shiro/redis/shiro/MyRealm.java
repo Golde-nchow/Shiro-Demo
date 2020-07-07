@@ -96,10 +96,17 @@ public class MyRealm extends AuthorizingRealm {
     ////////////////////////////// 缓存 /////////////////////////////
 
     /**
+     * 清除当前身份认证信息缓存
+     */
+    public void clearCurrentAuthorizationInfo() {
+        // 删除当前的用户授权信息缓存
+        getAuthorizationCache().remove(SecurityUtils.getSubject().getPrincipals());
+    }
+
+    /**
      * 清除当前授权信息缓存
      */
     public void clearCurrentAuthenticationInfo() {
-        // 删除当前的用户授权信息缓存
-        getAuthorizationCache().remove(SecurityUtils.getSubject().getPrincipals());
+        getAuthenticationCache().remove(SecurityUtils.getSubject().getPrincipals());
     }
 }

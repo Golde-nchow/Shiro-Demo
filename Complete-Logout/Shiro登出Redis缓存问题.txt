@@ -1,9 +1,0 @@
-第一个问题：
-1、当我们调用 logout 进行登出的时候，发现Redis中并没有清理2个缓存，使用 logout 方法或 自定义登出 Filter 即可解决。
-
-第二个问题：
-1、但这两种方法中，有一个缓存清理不了，就是权限认证信息的缓存。因为在删除的时候，传过来 key 的是User对象，
-   而非 username，因此无法被正确移除。
-
-2、因为在 SimpleAuthenticationInfo 对象中，我们 principle 使用的是 user 对象。Shiro源码也说了，
-   只要保证唯一即可，因此 principle 使用 username 会更好.

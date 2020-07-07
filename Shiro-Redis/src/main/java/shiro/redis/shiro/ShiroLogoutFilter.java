@@ -1,6 +1,7 @@
 package shiro.redis.shiro;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 
@@ -21,15 +22,22 @@ public class ShiroLogoutFilter extends LogoutFilter {
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
         // 获取当前用户
-        // Subject subject = getSubject(request, response);
+         Subject subject = getSubject(request, response);
         // 第一种登出方式，简单.
         // subject.logout();
 
         // 安全管理器
         DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
         MyRealm myRealm = (MyRealm) securityManager.getRealms().iterator().next();
+        myRealm.clearCurrentAuthorizationInfo();
         myRealm.clearCurrentAuthenticationInfo();
 
-        return super.preHandle(request, response);
+        subject.logout();
+
+        String redirectUrl = getRedirectUrl(request,response,subject);
+        issueRedirect(request, response, redirectUrl);
+
+        // 表示不执行后面的拦截器
+        return false;
     }
 }
